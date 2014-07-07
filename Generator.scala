@@ -28,8 +28,8 @@ class Generator(val expId: String) {
 
     /* Hi! You can put stuff in between the """s here, and line breaks are ok too! " */
     s"""
-      <img src="$uri">
-	  <p>$sentence</p>
+      <img width="640.8" height="475.2" src="$uri">
+	  <p style="font-size:30px" align="center">$sentence</p>
     """.trim.replaceAll("\n", " ")
   }
 
@@ -49,15 +49,16 @@ class Generator(val expId: String) {
 
 object Generator extends App {
   val generator = new Generator(args(0))
-  val reader = new CSVReader(new FileReader(args(1)))
-  val lines = reader.readAll().asScala
+  val times = args(1).toInt
+  val reader = new CSVReader(new FileReader(args(2)))
+  val lines = reader.readAll().asScala.tail
   reader.close()
 
-  val output = lines.tail.map(fields =>
+  val output = (1 to times).flatMap(_ => lines).map(fields =>
     generator.createJsItem(generator.fieldsToLine(fields))
   ).mkString(",\n")
 
-  val writer = new PrintWriter(new FileWriter(args(1).split("\\.").dropRight(1).mkString(".") + ".js"))
+  val writer = new PrintWriter(new FileWriter(args(2).split("\\.").dropRight(1).mkString(".") + ".js"))
 
   writer.println(output)
   writer.close()
