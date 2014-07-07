@@ -1,4 +1,4 @@
-import java.io.FileReader
+import java.io.{ FileReader, FileWriter, PrintWriter }
 import au.com.bytecode.opencsv.CSVReader
 import scala.collection.JavaConverters._
 
@@ -26,8 +26,10 @@ class Generator(val expId: String) {
     val uri = createImageUri(line)
     val sentence = createSentence(line)
 
+    /* Hi! You can put stuff in between the """s here, and line breaks are ok too! " */
     s"""
-      <img src="$uri"> <p>$sentence</p>
+      <img src="$uri">
+	  <p>$sentence</p>
     """.trim.replaceAll("\n", " ")
   }
 
@@ -51,9 +53,12 @@ object Generator extends App {
   val lines = reader.readAll().asScala
   reader.close()
 
-  val output = lines.map(fields =>
+  val output = lines.tail.map(fields =>
     generator.createJsItem(generator.fieldsToLine(fields))
   ).mkString(",\n")
 
-  println(output)
+  val writer = new PrintWriter(new FileWriter(args(1).split("\\.").dropRight(1).mkString(".") + ".js"))
+
+  writer.println(output)
+  writer.close()
 }
