@@ -10,7 +10,7 @@ case class Line(image: String, shapes: Shapes, colors: Int)
 
 class Generator(val expId: String) {
   def createImageUri(line: Line) =
-    "http://ling.umd.edu/~wellwood/longerest_circles_imgs/" + line.image
+    s"http://alexiswellwood.org/experiments/longerest/${ line.image }"
 
   def createSentence(line: Line) =
     (expId, line.shapes, line.colors) match {
@@ -40,11 +40,10 @@ class Generator(val expId: String) {
     s"""["$imageId", "AcceptabilityJudgment", {s: {html: '$html'}}]"""
   }
 
-  def fieldsToLine(fields: Array[String]) = Line(
-    fields(5),
-    if (fields(1).startsWith("Circle")) Circles else Lines,
-    if (fields(7) == "two") 2 else 3
-  )
+  def fieldsToLine(fields: Array[String]) = if (fields(1).startsWith("Circle"))
+    Line(s"longerest_circles_imgs/${ fields(5) }", Circles, if (fields(7) == "two") 2 else 3)
+  else
+    Line(s"longerest_lines_imgs/${ fields(5) }", Lines, if (fields(7) == "two") 2 else 3)
 }
 
 object Generator extends App {

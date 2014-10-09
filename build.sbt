@@ -1,4 +1,4 @@
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.2"
 
 libraryDependencies ++= Seq(
   "net.sf.opencsv" % "opencsv" % "2.0"
